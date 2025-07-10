@@ -1,0 +1,125 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 4rem 0 6rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  color: var(--foreground);
+}
+
+[data-theme="dark"] .heroBanner {
+  background: transparent;
+  color: var(--ifm-color-content);
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+[data-theme="dark"] .heroSubtitle {
+  color: var(--ifm-color-content-secondary);
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.getStartedButton {
+  background: oklch(from var(--brand-primary) l c h / 0.5);
+  border: 2px solid var(--border);
+  color: var(--primary-foreground);
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.getStartedButton:hover {
+  background: oklch(from var(--brand-primary-hover) l c h / 0.6);
+  border-color: var(--ring);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.viewDocsButton {
+  background: oklch(from var(--secondary) l c h / 0.5);
+  border: 2px solid var(--border);
+  color: var(--secondary-foreground);
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.viewDocsButton:hover {
+  background: oklch(from var(--secondary) l c h / 0.6);
+  border-color: var(--ring);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem 0 4rem 0;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .getStartedButton,
+  .viewDocsButton {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+}
