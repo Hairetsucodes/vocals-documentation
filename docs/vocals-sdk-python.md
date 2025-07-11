@@ -27,13 +27,76 @@ Before using the SDK, make sure you have:
 
 > **Getting Started?** Check out the [Installation Guide](./installation.md) and [Quick Start](./quickstart.md) first.
 
+## Class-Based API
+
+The Vocals SDK now uses a **class-based API** as the primary interface. This provides better resource management, cleaner code organization, and context manager support.
+
+### Basic Usage
+
+```python
+import asyncio
+from vocals import VocalsClient
+
+async def main():
+    # Create client instance
+    client = VocalsClient()
+
+    # Stream microphone
+    await client.stream_microphone(duration=10.0)
+
+    # Clean up
+    await client.disconnect()
+    client.cleanup()
+
+asyncio.run(main())
+```
+
+### Context Manager Support (Recommended)
+
+The client supports context managers for automatic resource cleanup:
+
+```python
+import asyncio
+from vocals import VocalsClient
+
+async def main():
+    async with VocalsClient() as client:
+        await client.stream_microphone(duration=10.0)
+        # Automatic cleanup when exiting context
+
+asyncio.run(main())
+```
+
 ## API Reference
+
+### SDK Modes
+
+The Vocals SDK supports two usage patterns:
+
+#### Default Experience (No Modes)
+
+```python
+# Full experience with automatic handlers, playback, and console output
+client = VocalsClient()
+```
+
+#### Controlled Experience (With Modes)
+
+```python
+# Controlled experience - you handle all logic
+client = VocalsClient(modes=['transcription', 'voice_assistant'])
+```
+
+**Available Modes:**
+
+- `'transcription'`: Enables transcription-related processing
+- `'voice_assistant'`: Enables AI response handling
 
 ### Core Functions
 
-#### `create_vocals(modes=None)`
+#### `VocalsClient(modes=None)`
 
-Creates a new Vocals SDK instance.
+Creates a new Vocals SDK client instance.
 
 **Parameters:**
 
@@ -41,19 +104,19 @@ Creates a new Vocals SDK instance.
   - `'transcription'`: Enables transcription processing
   - `'voice_assistant'`: Enables AI response handling
 
-**Returns:** Dictionary with SDK functions
+**Returns:** VocalsClient instance
 
 **Example:**
 
 ```python
 # Default experience (full auto-contained)
-sdk = create_vocals()
+client = VocalsClient()
 
 # Controlled experience (manual handling)
-sdk = create_vocals(modes=['transcription', 'voice_assistant'])
+client = VocalsClient(modes=['transcription', 'voice_assistant'])
 ```
 
-#### `sdk["stream_microphone"](...)`
+#### `client.stream_microphone(...)`
 
 Stream microphone input for real-time processing.
 
@@ -71,7 +134,7 @@ Stream microphone input for real-time processing.
 **Example:**
 
 ```python
-stats = await sdk["stream_microphone"](
+stats = await client.stream_microphone(
     duration=30.0,
     auto_connect=True,
     auto_playback=True,
@@ -79,7 +142,7 @@ stats = await sdk["stream_microphone"](
 )
 ```
 
-#### `sdk["stream_audio_file"](filepath)`
+#### `client.stream_audio_file(filepath)`
 
 Stream audio file for processing.
 
@@ -90,10 +153,10 @@ Stream audio file for processing.
 **Example:**
 
 ```python
-await sdk["stream_audio_file"]("path/to/audio.wav")
+await client.stream_audio_file("path/to/audio.wav")
 ```
 
-#### `sdk["on_message"](handler)`
+#### `client.on_message(handler)`
 
 Register a message handler for real-time events.
 
@@ -117,10 +180,10 @@ def handle_message(message):
     elif message.type == "llm_response":
         print(f"AI Response: {message.data.get('response')}")
 
-sdk["on_message"](handle_message)
+client.on_message(handle_message)
 ```
 
-#### `sdk["on_connection_change"](handler)`
+#### `client.on_connection_change(handler)`
 
 Register a connection state handler.
 
@@ -140,47 +203,47 @@ Register a connection state handler.
 def handle_connection(state):
     print(f"Connection state: {state.name}")
 
-sdk["on_connection_change"](handle_connection)
+client.on_connection_change(handle_connection)
 ```
 
-#### `sdk["play_audio"]()`
+#### `client.play_audio()`
 
 Manually play queued audio segments.
 
 **Example:**
 
 ```python
-await sdk["play_audio"]()
+await client.play_audio()
 ```
 
-#### `sdk["stop_recording"]()`
+#### `client.stop_recording()`
 
 Stop the current recording session.
 
 **Example:**
 
 ```python
-await sdk["stop_recording"]()
+await client.stop_recording()
 ```
 
-#### `sdk["disconnect"]()`
+#### `client.disconnect()`
 
 Disconnect from the Vocals service.
 
 **Example:**
 
 ```python
-await sdk["disconnect"]()
+await client.disconnect()
 ```
 
-#### `sdk["cleanup"]()`
+#### `client.cleanup()`
 
 Clean up resources and close connections.
 
 **Example:**
 
 ```python
-sdk["cleanup"]()
+client.cleanup()
 ```
 
 ### Helper Functions
@@ -238,13 +301,15 @@ vocals demo
 The SDK includes robust error handling and auto-reconnection:
 
 ```python
+client = VocalsClient()
+
 try:
-    await sdk["stream_microphone"](duration=30.0)
+    await client.stream_microphone(duration=30.0)
 except Exception as e:
     print(f"Error: {e}")
 finally:
-    await sdk["disconnect"]()
-    sdk["cleanup"]()
+    await client.disconnect()
+    client.cleanup()
 ```
 
 ## Advanced Features

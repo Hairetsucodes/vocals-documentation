@@ -6,7 +6,7 @@
 import asyncio
 import logging
 from vocals import (
-    create_vocals,
+    VocalsClient,
     create_enhanced_message_handler,
     create_default_connection_handler,
     create_default_error_handler,
@@ -17,14 +17,14 @@ async def main():
     logging.getLogger("vocals").setLevel(logging.WARNING)
 
     # Create SDK with default full experience
-    sdk = create_vocals()
+    client = VocalsClient()
 
     try:
         print("🎤 Starting microphone streaming...")
         print("Speak into your microphone!")
 
         # Stream microphone with enhanced features
-        stats = await sdk["stream_microphone"](
+        stats = await client.stream_micropone(
             duration=30.0,            # Record for 30 seconds
             auto_connect=True,        # Auto-connect if needed
             auto_playback=True,       # Auto-play received audio
@@ -41,8 +41,8 @@ async def main():
 
     finally:
         # Disconnect and cleanup
-        await sdk["disconnect"]()
-        sdk["cleanup"]()
+        await client.disconnect()
+        client.cleanup()
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -53,14 +53,14 @@ if __name__ == "__main__":
 ```python
 import asyncio
 from vocals import (
-    create_vocals,
+    VocalsClient,
     create_conversation_tracker,
     create_enhanced_message_handler,
 )
 
 async def main():
     # Create SDK with controlled experience for custom tracking
-    sdk = create_vocals(modes=['transcription', 'voice_assistant'])
+    client = VocalsClient(modes=['transcription', 'voice_assistant'])
     conversation_tracker = create_conversation_tracker()
 
     # Custom message handler with conversation tracking
@@ -82,7 +82,7 @@ async def main():
             if text:
                 print(f"🔊 Playing: {text}")
                 # Manually start playback since we're in controlled mode
-                asyncio.create_task(sdk["play_audio"]())
+                asyncio.create_task(client.play_audio())
 
         # Track conversation based on message type
         if message.type == "transcription" and message.data:
@@ -97,11 +97,11 @@ async def main():
                 conversation_tracker["add_response"](response)
 
     # Set up handler
-    sdk["on_message"](tracking_handler)
+    client.on_message(tracking_handler)
 
     try:
         # Stream microphone
-        await sdk["stream_microphone"](
+        await client.stream_microphone(
             duration=15.0,
             auto_playback=False  # We handle playback manually
         )
@@ -117,8 +117,8 @@ async def main():
         print(f"\n📈 Session lasted {stats['duration']:.1f} seconds")
 
     finally:
-        await sdk["disconnect"]()
-        sdk["cleanup"]()
+        await client.disconnect()
+        client.cleanup()
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 ```python
 import asyncio
 import signal
-from vocals import create_vocals
+from vocals import VocalsClient
 
 # Global shutdown event
 shutdown_event = asyncio.Event()
@@ -148,11 +148,11 @@ async def main():
     setup_signal_handlers()
 
     # Create SDK
-    sdk = create_vocals()
+    client = VocalsClient()
 
     # Create streaming task
     async def stream_task():
-        await sdk["stream_microphone"](
+        await client.stream_microphone(
             duration=0,  # 0 = infinite streaming
             auto_connect=True,
             auto_playback=True,
@@ -172,13 +172,13 @@ async def main():
         await shutdown_task
 
         # Stop recording gracefully
-        await sdk["stop_recording"]()
+        await client.stop_recording()
 
     finally:
         # Cancel streaming task
         streaming_task.cancel()
-        await sdk["disconnect"]()
-        sdk["cleanup"]()
+        await client.disconnect()
+        client.cleanup()
 
 if __name__ == "__main__":
     asyncio.run(main())

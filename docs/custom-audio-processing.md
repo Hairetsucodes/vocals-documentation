@@ -7,13 +7,13 @@ Instead of playing audio locally, you can process audio segments with custom han
 ```python
 import asyncio
 import base64
-from vocals import create_vocals
+from vocals import VocalsClient
 
 async def main():
     """Advanced voice assistant with custom audio processing"""
 
     # Create SDK with controlled mode for manual audio handling
-    sdk = create_vocals(modes=["transcription", "voice_assistant"])
+    client = VocalsClient(modes=["transcription", "voice_assistant"])
 
     # Custom state tracking
     conversation_state = {"listening": False, "processing": False, "speaking": False}
@@ -71,7 +71,7 @@ async def main():
                     # emotion_score = analyze_emotion(audio_features)
 
                 # Process all available audio segments
-                processed_count = sdk["process_audio_queue"](
+                processed_count = client.process_audio_queue(
                     custom_audio_handler,
                     consume_all=True
                 )
@@ -82,7 +82,7 @@ async def main():
             conversation_state["speaking"] = False
 
     # Register message handler
-    sdk["on_message"](handle_messages)
+    client.on_message(handle_messages)
 
     # Connection handler
     def handle_connection(state):
@@ -91,7 +91,7 @@ async def main():
         elif state.name == "DISCONNECTED":
             print("❌ Disconnected from voice assistant")
 
-    sdk["on_connection_change"](handle_connection)
+    client.on_connection_change(handle_connection)
 
     try:
         print("🎤 Voice Assistant with Custom Audio Processing")
@@ -100,7 +100,7 @@ async def main():
         print("Press Ctrl+C to stop")
 
         # Stream microphone with custom audio handling
-        await sdk["stream_microphone"](
+        await client.stream_microphone(
             duration=0,           # Infinite recording
             auto_connect=True,    # Auto-connect to service
             auto_playback=False,  # Disable automatic playback - we handle it
@@ -110,7 +110,7 @@ async def main():
     except KeyboardInterrupt:
         print("\n👋 Custom audio processing stopped")
     finally:
-        await sdk["disconnect"]()
+        await client.disconnect()
 
 if __name__ == "__main__":
     asyncio.run(main())

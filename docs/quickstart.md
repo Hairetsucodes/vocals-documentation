@@ -6,14 +6,14 @@
 
 ```python
 import asyncio
-from vocals import create_vocals
+from vocals import VocalsClient
 
 async def main():
     # Create SDK instance
-    sdk = create_vocals()
+    client = VocalsClient()
 
     # Stream microphone for 10 seconds
-    await sdk["stream_microphone"](duration=10.0)
+    await client.stream_microphone(duration=10.0)
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -23,14 +23,14 @@ if __name__ == "__main__":
 
 ```python
 import asyncio
-from vocals import create_vocals
+from vocals import VocalsClient
 
 async def main():
     # Create SDK instance
-    sdk = create_vocals()
+    client = VocalsClient()
 
     # Stream audio file
-    await sdk["stream_audio_file"]("path/to/your/audio.wav")
+    await client.stream_audio_file("path/to/your/audio.wav")
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -46,7 +46,7 @@ When you create the SDK without specifying modes, you get a full auto-contained 
 
 ```python
 # Full experience with automatic handlers, playback, and beautiful console output
-sdk = create_vocals()
+client = VocalsClient()
 ```
 
 **Features:**
@@ -64,7 +64,7 @@ When you specify modes, the SDK becomes passive and you control everything:
 
 ```python
 # Controlled experience - you handle all logic
-sdk = create_vocals(modes=['transcription', 'voice_assistant'])
+client = VocalsClient(modes=['transcription', 'voice_assistant'])
 ```
 
 **Available Modes:**
