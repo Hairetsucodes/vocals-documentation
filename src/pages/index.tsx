@@ -6,7 +6,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
 import Heading from "@theme/Heading";
-
+import { Analytics } from "@vercel/analytics/react";
 import styles from "./index.module.css";
 
 function HomepageHeader() {
@@ -68,6 +68,7 @@ export default function Home(): ReactNode {
       description="Comprehensive documentation for Vocals Voice AI - Integration guides for Python, Next.js, Node.js, Go, and React"
       wrapperClassName="gradient-background"
     >
+      <Analytics />
       <HomepageHeader />
       <main>
         <HomepageFeatures />
