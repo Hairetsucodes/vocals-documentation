@@ -96,7 +96,7 @@ export default function HomepageFeatures(): ReactNode {
       <div className="container">
         <div className={styles.featuresHeader}>
           <Heading as="h2" className={styles.featuresTitle}>
-            Choose Your Language
+            Choose Your Language or Framework
           </Heading>
           <p className={styles.featuresSubtitle}>
             Get started with Vocals using your preferred programming language or
